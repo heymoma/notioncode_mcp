@@ -1,0 +1,21 @@
+# Never send credentials, local state or host-installed dependencies into the
+# build context: COPY would otherwise overwrite the versions npm ci installed.
+.git
+.github
+.runtime
+state
+workspace
+**/node_modules
+**/__pycache__
+*.egg-info
+.ruff_cache
+.pytest_cache
+**/.env
+**/*.log
+**/notion_account.json
+**/accounts/*.json
+**/conversation-state.json
+**/pool-state.json
+**/mcp-path-secret
+docs
+tests

@@ -1,0 +1,9 @@
+[Unit]
+# One handle for both services: `systemctl restart notioncode.target`.
+Description=notioncode_mcp local AI service (__NOTIONCODE_ROOT__)
+Documentation=file://__NOTIONCODE_ROOT__/docs/operations.md
+Requires=notioncode-runtime.service notioncode-bridge.service
+After=notioncode-runtime.service notioncode-bridge.service
+
+[Install]
+WantedBy=multi-user.target

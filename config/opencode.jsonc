@@ -37,7 +37,7 @@
   "mcp": {
     "notion-private": {
       "type": "local",
-      "command": ["node", "__NOTIONCODE_ROOT__/notion-private-api-mcp/run-from-account.js"],
+      "command": ["node", "__NOTIONCODE_ROOT__/services/notion-private-mcp/run-from-account.js"],
       "enabled": true,
       "timeout": 10000
     }

@@ -7,8 +7,8 @@ must be empty and must not be created with an extra README or license commit.
 
 ```bash
 git status --short
-node scripts/check-public-release.mjs
-node scripts/check-layout.mjs
+node scripts/checks/check-public-release.mjs
+node scripts/checks/check-layout.mjs
 git diff --check
 ```
 

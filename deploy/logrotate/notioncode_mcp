@@ -1,0 +1,19 @@
+# Only needed when the services are started manually with scripts/dev/*.sh.
+# Under systemd both services log to journald, which rotates on its own; see
+# docs/operations.md for journald retention settings.
+#
+# Install with:
+#   sudo cp deploy/logrotate/notioncode_mcp /etc/logrotate.d/notioncode_mcp
+#   sudo sed -i "s|__NOTIONCODE_ROOT__|$PWD|" /etc/logrotate.d/notioncode_mcp
+
+__NOTIONCODE_ROOT__/.runtime/logs/*.log {
+    daily
+    rotate 7
+    maxsize 20M
+    missingok
+    notifempty
+    compress
+    delaycompress
+    copytruncate
+    create 0600 root root
+}

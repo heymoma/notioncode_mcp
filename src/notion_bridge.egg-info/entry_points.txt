@@ -1,0 +1,3 @@
+[console_scripts]
+notion-bridge = notion_bridge.__main__:main
+notion-bridge-migrate = notion_bridge.accounts.migrate:main
