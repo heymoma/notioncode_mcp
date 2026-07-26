@@ -16,7 +16,7 @@ requires_openai_auth = false
 
 [mcp_servers.notion-private]
 command = "node"
-args = ["__NOTIONCODE_ROOT__/notion-private-api-mcp/run-from-account.js"]
+args = ["__NOTIONCODE_ROOT__/services/notion-private-mcp/run-from-account.js"]
 startup_timeout_sec = 20
 tool_timeout_sec = 120
 enabled = false # __NOTION_MCP_ENABLED__

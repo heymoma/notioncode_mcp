@@ -1,0 +1,35 @@
+[Unit]
+Description=notioncode_mcp coding-tools MCP runtime (files and shell under CODE_ROOT)
+Documentation=file://__NOTIONCODE_ROOT__/docs/operations.md
+After=network-online.target
+Wants=network-online.target
+PartOf=notioncode.target
+StartLimitIntervalSec=0
+
+[Service]
+Type=simple
+User=__SERVICE_USER__
+WorkingDirectory=__NOTIONCODE_ROOT__/services/mcp-runtime
+Environment=HOME=__USER_HOME__
+Environment=NODE_ENV=production
+EnvironmentFile=__NOTIONCODE_ROOT__/.runtime/env/mcp-runtime.env
+ExecStart=/usr/bin/env node __NOTIONCODE_ROOT__/services/mcp-runtime/src/server.js
+Restart=always
+RestartSec=2
+
+KillSignal=SIGTERM
+TimeoutStopSec=15
+
+# Deliberately not sandboxed. This service exists to edit files and run build
+# and test commands inside CODE_ROOT on the user's behalf, so ProtectHome,
+# ProtectSystem and NoNewPrivileges would break the feature rather than
+# protect it. Containment is CODE_ROOT plus the unguessable MCP path secret.
+PrivateTmp=no
+
+MemoryMax=2G
+TasksMax=512
+LimitNOFILE=8192
+OOMPolicy=continue
+
+[Install]
+WantedBy=multi-user.target

@@ -1,0 +1,43 @@
+[build-system]
+requires = ["setuptools>=68"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "notion-bridge"
+version = "2.0.0"
+description = "Local OpenAI/Anthropic-compatible bridge in front of Notion AI"
+readme = "README.md"
+requires-python = ">=3.10"
+license = { file = "LICENSE" }
+dependencies = ["notion-agent-cli[serve]==0.1.12"]
+
+[project.scripts]
+notion-bridge = "notion_bridge.__main__:main"
+notion-bridge-migrate = "notion_bridge.accounts.migrate:main"
+
+[project.optional-dependencies]
+dev = ["ruff==0.15.8"]
+
+[tool.setuptools.packages.find]
+where = ["src"]
+
+[tool.ruff]
+line-length = 96
+target-version = "py310"
+src = ["src", "tests"]
+
+[tool.ruff.lint]
+select = ["E", "F", "W", "I", "UP", "B", "C4", "SIM", "RUF"]
+ignore = [
+  # The pool and API layers reach into notion-agent-cli internals on purpose.
+  "SLF001",
+  # Long planner prompts read better as single strings than as joins.
+  "E501",
+]
+
+[tool.ruff.lint.per-file-ignores]
+"tests/**" = ["E402", "B011"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests/bridge"]
+pythonpath = ["src"]

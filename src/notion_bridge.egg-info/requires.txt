@@ -1,0 +1,4 @@
+notion-agent-cli[serve]==0.1.12
+
+[dev]
+ruff==0.15.8

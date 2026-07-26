@@ -1,0 +1,41 @@
+# Headless 24/7 deployment. Run from the repository root:
+#   docker compose -f deploy/docker/docker-compose.yml up -d --build
+#
+# Provision a Notion session once into the state volume before first use, see
+# docs/install-docker.md. Ports stay bound to the loopback interface.
+services:
+  notioncode:
+    build:
+      context: ../..
+      dockerfile: deploy/docker/Dockerfile
+    image: notioncode-mcp:2.0.0
+    container_name: notioncode-mcp
+    restart: unless-stopped
+    stop_grace_period: 45s
+    ports:
+      - "127.0.0.1:8765:8765"
+      - "127.0.0.1:8787:8787"
+    environment:
+      NOTION_FORCE_MODEL: "${NOTION_FORCE_MODEL:-}"
+      NOTION_LOG_LEVEL: "${NOTION_LOG_LEVEL:-INFO}"
+      NOTION_INFERENCE_TIMEOUT_SECONDS: "${NOTION_INFERENCE_TIMEOUT_SECONDS:-180}"
+      CODE_ROOT: /workspace
+    volumes:
+      # Notion sessions, model aliases and conversation state.
+      - notioncode-state:/state
+      # The code the agent is allowed to read and change.
+      - "${NOTIONCODE_WORKSPACE:-./workspace}:/workspace"
+    healthcheck:
+      test: ["CMD", "curl", "-fsS", "http://127.0.0.1:8765/livez"]
+      interval: 30s
+      timeout: 5s
+      retries: 3
+      start_period: 20s
+    logging:
+      driver: json-file
+      options:
+        max-size: "20m"
+        max-file: "5"
+
+volumes:
+  notioncode-state:

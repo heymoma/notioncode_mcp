@@ -1,11 +1,12 @@
-# Runtime state and credentials
+# Runtime state, credentials and generated service environment
 /.runtime/
 /state/
-/runtime/.env
+/workspace/
 /public-repo/
 /.notionagents/
 **/notion_account.json
 **/accounts/*.json
+**/mcp-path-secret
 **/*.legacy-backup
 **/conversation-state.json
 **/pool-state.json
@@ -16,10 +17,14 @@
 **/.env.*
 !**/.env.example
 
-# Dependencies and generated files
+# Dependencies and build artefacts
 **/node_modules/
 **/__pycache__/
 *.py[cod]
+*.egg-info/
+/src/*.egg-info/
+.ruff_cache/
+.pytest_cache/
 *.log
 
 # Local editor and OS files

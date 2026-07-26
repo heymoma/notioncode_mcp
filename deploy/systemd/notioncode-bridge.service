@@ -1,0 +1,53 @@
+[Unit]
+Description=notioncode_mcp API bridge (OpenAI/Anthropic compatibility for Notion AI)
+Documentation=file://__NOTIONCODE_ROOT__/docs/operations.md
+After=network-online.target notioncode-runtime.service
+Wants=network-online.target
+PartOf=notioncode.target
+# An always-on service must never give up restarting, so rate limiting is off.
+StartLimitIntervalSec=0
+
+[Service]
+Type=simple
+User=__SERVICE_USER__
+WorkingDirectory=__NOTIONCODE_ROOT__
+Environment=HOME=__USER_HOME__
+Environment=PYTHONUNBUFFERED=1
+Environment=PYTHONDONTWRITEBYTECODE=1
+Environment=NOTIONCODE_ROOT=__NOTIONCODE_ROOT__
+EnvironmentFile=__NOTIONCODE_ROOT__/.runtime/env/bridge.env
+ExecStart=__NOTIONCODE_ROOT__/.runtime/notion-agent-cli-venv/bin/python -m notion_bridge
+Restart=always
+RestartSec=2
+
+# The bridge answers WATCHDOG pings from its event loop, so systemd also
+# recovers a process that is alive but wedged, not only one that exited.
+NotifyAccess=main
+WatchdogSec=120
+
+# Let an in-flight Notion turn drain instead of being killed mid-request.
+KillSignal=SIGTERM
+TimeoutStopSec=45
+
+# Sandboxing. The bridge only needs its own state directory and the project
+# tree; it never touches user projects, which is what the runtime service does.
+NoNewPrivileges=yes
+PrivateTmp=yes
+ProtectSystem=strict
+ProtectHome=read-only
+ReadWritePaths=__USER_HOME__/.notionagents
+ReadWritePaths=__NOTIONCODE_ROOT__/.runtime
+ProtectKernelTunables=yes
+ProtectKernelModules=yes
+ProtectControlGroups=yes
+RestrictSUIDSGID=yes
+RestrictRealtime=yes
+LockPersonality=yes
+
+MemoryMax=1G
+TasksMax=256
+LimitNOFILE=8192
+OOMPolicy=continue
+
+[Install]
+WantedBy=multi-user.target
